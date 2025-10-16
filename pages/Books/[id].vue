@@ -1,7 +1,10 @@
 <template>
   <div class="max-w-6xl mx-auto py-10 px-4 relative">
     <!-- Auth Overlay -->
-    <div v-if="!user" class="absolute inset-0 bg-white/70 backdrop-blur-sm z-20 flex items-center justify-center">
+    <div
+      v-if="!user"
+      class="absolute inset-0 bg-white/70 backdrop-blur-sm z-20 flex items-center justify-center"
+    >
       <div class="w-full max-w-md p-6">
         <component
           :is="showSignUp ? SignUpForm : SignInForm"
@@ -11,21 +14,31 @@
       </div>
     </div>
 
-    <div :class="{'blur-sm pointer-events-none': !user}" class="bg-white rounded-xl shadow-md p-6">
-      <button @click="$router.back()" class="text-orange-600 mb-6 flex items-center gap-2 hover:underline">
+    <div :class="{ 'blur-sm pointer-events-none': !user }" class="bg-white rounded-xl shadow-md p-6">
+      <button
+        @click="$router.back()"
+        class="text-orange-600 mb-6 flex items-center gap-2 hover:underline"
+      >
         ← Go Back
       </button>
 
       <div class="md:flex gap-8">
+        <!-- Book info -->
         <div class="md:w-1/3 md:sticky md:top-24 mb-6 md:mb-0">
-          <img :src="book?.coverUrl" alt="cover" class="w-full h-64 object-cover rounded shadow-md mb-4" />
+          <img
+            :src="book?.coverUrl"
+            alt="cover"
+            class="w-full h-64 object-cover rounded shadow-md mb-4"
+          />
           <h1 class="text-2xl font-bold text-orange-800">{{ book?.title }}</h1>
           <p class="text-sm text-gray-600 mb-2">by {{ book?.author }}</p>
           <p class="text-sm text-gray-500 mb-4">
             Uploaded by: <strong>{{ book?.uploadedBy || 'Unknown' }}</strong>
           </p>
           <div class="flex gap-3 mb-4">
-            <button @click="downloadBook(book)" class="px-4 py-2 bg-orange-600 text-white rounded-md">Download</button>
+            <button @click="downloadBook(book)" class="px-4 py-2 bg-orange-600 text-white rounded-md">
+              Download
+            </button>
             <button
               @click="toggleBookmark(book)"
               :class="isBookmarked ? 'bg-gray-200' : 'bg-white border'"
@@ -41,6 +54,7 @@
           </div>
         </div>
 
+        <!-- Reviews -->
         <div class="md:w-2/3">
           <h3 class="text-lg font-semibold mb-4">Reviews</h3>
 
@@ -52,7 +66,11 @@
               placeholder="Write your review..."
               class="flex-1 border rounded-lg p-2 focus:ring-2 focus:ring-orange-500"
             />
-            <button @click="postReview" :disabled="isPosting" class="px-4 py-2 bg-orange-600 text-white rounded-md">
+            <button
+              @click="postReview"
+              :disabled="isPosting"
+              class="px-4 py-2 bg-orange-600 text-white rounded-md"
+            >
               {{ isPosting ? 'Posting...' : 'Post' }}
             </button>
           </div>
@@ -64,20 +82,26 @@
               v-for="(r, idx) in book?.reviews || []"
               :key="idx"
               class="p-3 bg-gray-50 rounded flex items-start gap-3 relative"
+              @click.outside="menuOpen === idx && (menuOpen = null)"
             >
+              <!-- Avatar -->
               <div
                 class="w-10 h-10 rounded-full text-white flex items-center justify-center font-bold text-lg"
                 :style="{ backgroundColor: getColorFromName(r.user) }"
               >
                 {{ r.user.charAt(0).toUpperCase() }}
               </div>
+
               <div class="flex-1">
                 <div class="flex justify-between items-center">
                   <div class="text-sm font-semibold">{{ r.user }}</div>
 
-                  <!-- Edit/Delete Menu (only for review owner) -->
+                  <!-- Three-dot menu -->
                   <div v-if="user?.email === r.userEmail" class="relative">
-                    <lucide-dots-vertical @click="toggleMenu(idx)" class="w-5 h-5 cursor-pointer"/>
+                    <EllipsisVertical
+                      class="w-5 h-5 cursor-pointer"
+                      @click.stop="toggleMenu(idx)"
+                    />
                     <div
                       v-if="menuOpen === idx"
                       class="absolute right-0 top-6 bg-white shadow-md rounded border z-30"
@@ -101,7 +125,10 @@
                 <div class="text-sm text-gray-600 mt-1">{{ r.comment }}</div>
               </div>
             </div>
-            <div v-if="!(book?.reviews && book.reviews.length)" class="text-gray-500">No reviews yet.</div>
+
+            <div v-if="!(book?.reviews && book.reviews.length)" class="text-gray-500">
+              No reviews yet.
+            </div>
           </div>
         </div>
       </div>
@@ -119,7 +146,7 @@ import { useBooksStore } from '@/stores/books';
 import { useToast } from 'vue-toastification';
 import SignInForm from '@/components/auth/sign-in.vue';
 import SignUpForm from '@/components/auth/sign-up.vue';
-import { DotsVertical } from 'lucide-vue-next';
+import { EllipsisVertical } from 'lucide-vue-next';
 
 const route = useRoute();
 const id = route.params.id;
@@ -139,18 +166,14 @@ const colors = ['#F97316','#F59E0B','#10B981','#3B82F6','#8B5CF6','#EC4899','#EF
 const getColorFromName = (name) => {
   if (!name) return '#6B7280';
   let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
   const index = Math.abs(hash) % colors.length;
   return colors[index];
 };
 
 // Auth state
 onMounted(() => {
-  onAuthStateChanged(auth, (u) => {
-    user.value = u;
-  });
+  onAuthStateChanged(auth, (u) => (user.value = u));
 });
 
 // Load book
@@ -164,7 +187,7 @@ onMounted(async () => {
   }
 });
 
-// --- Download ---
+// Download
 const downloadBook = (b) => {
   if (!b?.fileUrl) return;
   const url = b.fileUrl.includes('?') ? b.fileUrl + '&dl=1' : b.fileUrl + '?dl=1';
@@ -177,7 +200,7 @@ const downloadBook = (b) => {
 };
 
 // Bookmark
-const isBookmarked = computed(() => !!store.bookmarks.find(x => x.id === id));
+const isBookmarked = computed(() => !!store.bookmarks.find((x) => x.id === id));
 const toggleBookmark = (b) => {
   if (isBookmarked.value) store.removeBookmark(id);
   else store.addBookmark({ id: b.id, title: b.title, coverUrl: b.coverUrl, author: b.author });
@@ -191,15 +214,19 @@ const postReview = async () => {
     user: user.value.displayName || user.value.email,
     userEmail: user.value.email,
     comment: newReview.value.trim(),
-    createdAt: new Date()
+    createdAt: new Date(),
   };
   try {
     await updateDoc(doc(db, 'books', id), { reviews: arrayUnion(reviewData) });
     book.value.reviews = book.value.reviews ? [...book.value.reviews, reviewData] : [reviewData];
     newReview.value = '';
     toast.success('Review posted!');
-  } catch (err) { console.error(err); toast.error('Failed to post review'); }
-  finally { isPosting.value = false; }
+  } catch (err) {
+    console.error(err);
+    toast.error('Failed to post review');
+  } finally {
+    isPosting.value = false;
+  }
 };
 
 // Toggle menu
@@ -211,7 +238,7 @@ const toggleMenu = (idx) => {
 const editReview = (idx) => {
   const r = book.value.reviews[idx];
   newReview.value = r.comment;
-  deleteReview(idx, false); // remove original, keep menu open
+  deleteReview(idx, false);
   menuOpen.value = null;
 };
 
@@ -223,11 +250,17 @@ const deleteReview = async (idx, confirmDelete = true) => {
     await updateDoc(doc(db, 'books', id), { reviews: arrayRemove(r) });
     book.value.reviews.splice(idx, 1);
     toast.success('Review deleted!');
-  } catch (err) { console.error(err); toast.error('Failed to delete review'); }
+  } catch (err) {
+    console.error(err);
+    toast.error('Failed to delete review');
+  }
   menuOpen.value = null;
 };
 
 // Auth overlay
-const toggleAuthForm = () => { showSignUp.value = !showSignUp.value; showSignIn.value = !showSignIn.value; };
-const onAuthSuccess = (u) => { user.value = u; };
+const toggleAuthForm = () => {
+  showSignUp.value = !showSignUp.value;
+  showSignIn.value = !showSignIn.value;
+};
+const onAuthSuccess = (u) => (user.value = u);
 </script>

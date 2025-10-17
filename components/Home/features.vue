@@ -2,7 +2,6 @@
   <div class="py-16 px-4">
     <div class="max-w-7xl mx-auto">
       <h2 class="text-4xl font-bold text-center bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-700 bg-clip-text text-transparent mb-12">Features</h2>
-
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
         <div
           v-for="(feature, index) in features"
@@ -10,7 +9,6 @@
           class="group relative bg-gradient-to-br from-orange-50 to-orange-100 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-orange-200/50"
           style="background: linear-gradient(135deg, rgba(234, 88, 12, 0.1) 0%, rgba(194, 65, 12, 0.15) 100%); backdrop-filter: blur(10px);"
         >
-
           <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-50 pointer-events-none"></div>
 
 
@@ -19,13 +17,10 @@
           <p class="text-gray-700 text-sm mb-4 leading-relaxed">{{ feature.description }}</p>
         </div>
       </div>
-
     </div>
   </div>
 </template>
-
 <script setup>
-
 const features = [
   {
     title: 'Upload Books',

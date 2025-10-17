@@ -58,9 +58,7 @@
     </div>
 
     <div class="border-t border-orange-700 text-gray-100 text-sm py-4 text-center">
-      &copy; {{ new Date().getFullYear() }} Your Company. All rights reserved.
+      &copy; {{ new Date().getFullYear() }} 🤍 Oluwabukola
     </div>
   </footer>
 </template>
-
-]

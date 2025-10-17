@@ -1,10 +1,9 @@
 <template>
   <div class="max-w-xl mx-auto mt-10 relative">
-    <!-- Blur overlay if user not signed in -->
     <div v-if="!user" class="absolute inset-0 bg-white/70 backdrop-blur-sm z-20 flex items-center justify-center">
       <div class="w-full max-w-md p-6">
         <component
-          :is="showSignUp ? SignUpFor : SignInForm "
+          :is="showSignUp ? SignUpForm : SignInForm "
           @success="onAuthSuccess"
           @switch="toggleAuthForm"
         />
@@ -40,8 +39,6 @@
             <option>Religion</option>
           </select>
         </div>
-
-        <!-- Pre-fill uploadedBy with user's displayName if logged in -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Uploaded By</label>
           <input v-model="uploadedBy" type="text" required readonly class="w-full border rounded-lg p-2 bg-gray-100 cursor-not-allowed"/>
@@ -67,8 +64,35 @@
         </div>
 
         <button type="submit" :disabled="isUploading" class="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 rounded-lg font-semibold">
-          {{ isUploading ? 'Uploading...' : 'Upload Book' }}
-        </button>
+
+
+  <template v-if="isUploading">
+    <svg
+      class="animate-spin h-5 w-5 text-white"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle
+        class="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        stroke-width="4"
+      ></circle>
+      <path
+        class="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+      ></path>
+    </svg>
+  </template>
+  <template v-else>
+    Upload Book
+  </template>
+</button>
+
 
         <p v-if="message" class="text-center mt-3 text-sm text-gray-600">{{ message }}</p>
       </form>
@@ -89,7 +113,6 @@ import SignUpForm from '@/components/auth/sign-up.vue'
 
 const toast = useToast()
 
-// Upload form refs
 const title = ref('')
 const author = ref('')
 const category = ref('')
@@ -101,17 +124,12 @@ const coverPreview = ref('')
 const fileName = ref('')
 const isUploading = ref(false)
 const message = ref('')
-
-// Auth & overlay state
 const user = ref(null)
 const showSignIn = ref(true)
 const showSignUp = ref(false)
-
-// Cloudinary config
 const CLOUD_NAME = 'daqaratep'
 const UPLOAD_PRESET = 'bookie'
 
-// Track current auth user
 onMounted(() => {
   onAuthStateChanged(auth, (u) => {
     user.value = u
@@ -129,7 +147,7 @@ const handleFileChange = (e) => {
   fileName.value = file.value?.name || ''
 }
 
-// Cloudinary upload
+// Cloudinary
 const uploadToCloudinary = async (file, folder, isPDF = false) => {
   if (!file) throw new Error('File is missing')
   const formData = new FormData()
@@ -184,7 +202,6 @@ const uploadBook = async () => {
   }
 }
 
-// Handle auth overlay events
 const toggleAuthForm = () => {
   showSignUp.value = !showSignUp.value
   showSignIn.value = !showSignIn.value

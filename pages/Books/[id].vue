@@ -1,266 +1,156 @@
 <template>
-  <div class="max-w-6xl mx-auto py-10 px-4 relative">
-    <!-- Auth Overlay -->
-    <div
-      v-if="!user"
-      class="absolute inset-0 bg-white/70 backdrop-blur-sm z-20 flex items-center justify-center"
-    >
-      <div class="w-full max-w-md p-6">
-        <component
-          :is="showSignUp ? SignUpForm : SignInForm"
-          @success="onAuthSuccess"
-          @switch="toggleAuthForm"
+  <div class="relative py-10 md:pt-32 pb-16 px-4 overflow-hidden">
+    <!-- Search bar -->
+    <div class="relative max-w-2xl mx-auto px-2">
+      <div
+        class="relative flex items-center bg-white rounded-2xl shadow-xl overflow-hidden border border-orange-200/50 backdrop-blur-sm group hover:shadow-3xl transition-shadow duration-300"
+      >
+        <div class="pl-5">
+          <Search
+            class="w-5 h-5 md:w-6 md:h-6 text-gray-400 group-focus-within:text-orange-600 transition-colors"
+          />
+        </div>
+
+        <input
+          type="text"
+          placeholder="Search by title, author, or category..."
+          v-model="searchQuery"
+          class="flex-1 text-gray-900 placeholder-gray-500 bg-transparent focus:outline-none text-base md:text-lg"
+          @keyup.enter="handleSearch"
         />
+
+        <button
+          @click="handleSearch"
+          class="h-full px-6 md:px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-700 text-white font-semibold transition-all duration-300 hover:scale-105 shadow-md"
+        >
+          Search
+        </button>
+      </div>
+
+      <!-- Category tags -->
+      <div class="flex flex-wrap justify-center gap-3 mt-6">
+        <button
+          v-for="tag in allCategories"
+          :key="tag"
+          @click="applyTag(tag)"
+          class="px-4 py-2 bg-white/80 hover:bg-white text-gray-700 hover:text-orange-700 rounded-full text-sm font-medium shadow-sm transition-all duration-200 border border-orange-100"
+        >
+          {{ tag }}
+        </button>
       </div>
     </div>
 
-    <div :class="{ 'blur-sm pointer-events-none': !user }" class="bg-white rounded-xl shadow-md p-6">
-      <button
-        @click="$router.back()"
-        class="text-orange-600 mb-6 flex items-center gap-2 hover:underline"
+
+    <div class="mt-10 max-w-6xl mx-auto text-left">
+      <div v-if="isLoading" class="text-orange-600 font-medium text-center">
+        Loading books...
+      </div>
+      <div v-if="errorMessage" class="text-red-500 text-center">
+        {{ errorMessage }}
+      </div>
+
+      <div
+        v-if="filteredBooks.length"
+        class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-6"
       >
-        ← Go Back
-      </button>
-
-      <div class="md:flex gap-8">
-        <!-- Book info -->
-        <div class="md:w-1/3 md:sticky md:top-24 mb-6 md:mb-0">
+        <div
+          v-for="book in filteredBooks"
+          :key="book.id"
+          @click="openBook(book.id)"
+          class="bg-white rounded-xl shadow-md hover:shadow-lg cursor-pointer transition-all overflow-hidden border border-orange-100 group"
+        >
           <img
-            :src="book?.coverUrl"
-            alt="cover"
-            class="w-full h-64 object-cover rounded shadow-md mb-4"
+            :src="book.coverUrl"
+            alt="Book Cover"
+            class="w-full h-48 object-cover group-hover:opacity-90 transition"
           />
-          <h1 class="text-2xl font-bold text-orange-800">{{ book?.title }}</h1>
-          <p class="text-sm text-gray-600 mb-2">by {{ book?.author }}</p>
-          <p class="text-sm text-gray-500 mb-4">
-            Uploaded by: <strong>{{ book?.uploadedBy || 'Unknown' }}</strong>
-          </p>
-          <div class="flex gap-3 mb-4">
-            <button @click="downloadBook(book)" class="px-4 py-2 bg-orange-600 text-white rounded-md">
-              Download
-            </button>
-            <button
-              @click="toggleBookmark(book)"
-              :class="isBookmarked ? 'bg-gray-200' : 'bg-white border'"
-              class="px-4 py-2 rounded-md border"
+          <div class="p-4">
+            <h3 class="text-lg font-semibold text-orange-800">
+              {{ book.title }}
+            </h3>
+            <p class="text-sm text-gray-600 mb-2">by {{ book.author }}</p>
+            <span
+              class="inline-block px-2 py-1 text-xs bg-orange-100 text-orange-700 rounded-full"
             >
-              <span v-if="isBookmarked">Bookmarked ✓</span>
-              <span v-else>Bookmark</span>
-            </button>
-          </div>
-          <div class="text-gray-700">
-            <h4 class="font-semibold">About</h4>
-            <p class="mt-2">{{ book?.description }}</p>
+              {{ book.category }}
+            </span>
           </div>
         </div>
+      </div>
 
-        <!-- Reviews -->
-        <div class="md:w-2/3">
-          <h3 class="text-lg font-semibold mb-4">Reviews</h3>
-
-          <!-- Add Review -->
-          <div v-if="user" class="mb-4 flex gap-2">
-            <input
-              v-model="newReview"
-              type="text"
-              placeholder="Write your review..."
-              class="flex-1 border rounded-lg p-2 focus:ring-2 focus:ring-orange-500"
-            />
-            <button
-              @click="postReview"
-              :disabled="isPosting"
-              class="px-4 py-2 bg-orange-600 text-white rounded-md"
-            >
-              {{ isPosting ? 'Posting...' : 'Post' }}
-            </button>
-          </div>
-          <div v-else class="text-gray-500 mb-4">Sign in to post a review.</div>
-
-          <!-- Review List -->
-          <div class="max-h-[500px] overflow-y-auto space-y-3">
-            <div
-              v-for="(r, idx) in book?.reviews || []"
-              :key="idx"
-              class="p-3 bg-gray-50 rounded flex items-start gap-3 relative"
-              @click.outside="menuOpen === idx && (menuOpen = null)"
-            >
-              <!-- Avatar -->
-              <div
-                class="w-10 h-10 rounded-full text-white flex items-center justify-center font-bold text-lg"
-                :style="{ backgroundColor: getColorFromName(r.user) }"
-              >
-                {{ r.user.charAt(0).toUpperCase() }}
-              </div>
-
-              <div class="flex-1">
-                <div class="flex justify-between items-center">
-                  <div class="text-sm font-semibold">{{ r.user }}</div>
-
-                  <!-- Three-dot menu -->
-                  <div v-if="user?.email === r.userEmail" class="relative">
-                    <EllipsisVertical
-                      class="w-5 h-5 cursor-pointer"
-                      @click.stop="toggleMenu(idx)"
-                    />
-                    <div
-                      v-if="menuOpen === idx"
-                      class="absolute right-0 top-6 bg-white shadow-md rounded border z-30"
-                    >
-                      <button
-                        @click="editReview(idx)"
-                        class="block px-3 py-1 hover:bg-gray-100 w-full text-left text-sm"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        @click="deleteReview(idx)"
-                        class="block px-3 py-1 hover:bg-gray-100 w-full text-left text-sm text-red-500"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="text-sm text-gray-600 mt-1">{{ r.comment }}</div>
-              </div>
-            </div>
-
-            <div v-if="!(book?.reviews && book.reviews.length)" class="text-gray-500">
-              No reviews yet.
-            </div>
-          </div>
-        </div>
+      <div
+        v-else-if="!isLoading && !errorMessage"
+        class="text-gray-500 mt-6 text-center"
+      >
+        No books found.
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { useRoute } from 'vue-router';
-import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
-import { db, auth } from '@/composables/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-import { useBooksStore } from '@/stores/books';
-import { useToast } from 'vue-toastification';
-import SignInForm from '@/components/auth/sign-in.vue';
-import SignUpForm from '@/components/auth/sign-up.vue';
-import { EllipsisVertical } from 'lucide-vue-next';
+import { ref, onMounted } from 'vue'
+import { Search } from 'lucide-vue-next'
+import { db } from '@/composables/firebase'
+import { collection, getDocs, query, where } from 'firebase/firestore'
+import { useRouter } from 'vue-router'
 
-const route = useRoute();
-const id = route.params.id;
+const router = useRouter()
+const searchQuery = ref('')
+const books = ref([])
+const filteredBooks = ref([])
+const isLoading = ref(false)
+const errorMessage = ref('')
+const allCategories = ['All', 'Fiction', 'Business', 'Self-Help', 'Technology', 'Science', 'Biography', 'Religion']
 
-const toast = useToast();
-const store = useBooksStore();
-
-const book = ref(null);
-const newReview = ref('');
-const isPosting = ref(false);
-const user = ref(null);
-const showSignIn = ref(true);
-const showSignUp = ref(false);
-const menuOpen = ref(null);
-
-const colors = ['#F97316','#F59E0B','#10B981','#3B82F6','#8B5CF6','#EC4899','#EF4444','#14B8A6','#F43F5E'];
-const getColorFromName = (name) => {
-  if (!name) return '#6B7280';
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  const index = Math.abs(hash) % colors.length;
-  return colors[index];
-};
-
-// Auth state
-onMounted(() => {
-  onAuthStateChanged(auth, (u) => (user.value = u));
-});
-
-// Load book
-onMounted(async () => {
+const fetchBooks = async () => {
+  isLoading.value = true
+  errorMessage.value = ''
   try {
-    const snap = await getDoc(doc(db, 'books', id));
-    if (!snap.exists()) return;
-    book.value = { id: snap.id, ...snap.data() };
-  } catch (e) {
-    console.error(e);
-  }
-});
-
-// Download
-const downloadBook = (b) => {
-  if (!b?.fileUrl) return;
-  const url = b.fileUrl.includes('?') ? b.fileUrl + '&dl=1' : b.fileUrl + '?dl=1';
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = b.title ? `${b.title}.pdf` : 'book.pdf';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-};
-
-// Bookmark
-const isBookmarked = computed(() => !!store.bookmarks.find((x) => x.id === id));
-const toggleBookmark = (b) => {
-  if (isBookmarked.value) store.removeBookmark(id);
-  else store.addBookmark({ id: b.id, title: b.title, coverUrl: b.coverUrl, author: b.author });
-};
-
-// Post review
-const postReview = async () => {
-  if (!newReview.value.trim() || !user.value) return;
-  isPosting.value = true;
-  const reviewData = {
-    user: user.value.displayName || user.value.email,
-    userEmail: user.value.email,
-    comment: newReview.value.trim(),
-    createdAt: new Date(),
-  };
-  try {
-    await updateDoc(doc(db, 'books', id), { reviews: arrayUnion(reviewData) });
-    book.value.reviews = book.value.reviews ? [...book.value.reviews, reviewData] : [reviewData];
-    newReview.value = '';
-    toast.success('Review posted!');
+    const snapshot = await getDocs(collection(db, 'books'))
+    const data = []
+    snapshot.forEach((doc) => data.push({ id: doc.id, ...doc.data() }))
+    books.value = data
+    filteredBooks.value = data
   } catch (err) {
-    console.error(err);
-    toast.error('Failed to post review');
+    console.error(err)
+    errorMessage.value = 'Failed to load books.'
   } finally {
-    isPosting.value = false;
+    isLoading.value = false
   }
-};
+}
 
-// Toggle menu
-const toggleMenu = (idx) => {
-  menuOpen.value = menuOpen.value === idx ? null : idx;
-};
+const applyTag = (tag) => {
+  if (tag === 'All') filteredBooks.value = books.value
+  else
+    filteredBooks.value = books.value.filter(
+      (b) => b.category?.toLowerCase() === tag.toLowerCase()
+    )
+}
 
-// Edit review
-const editReview = (idx) => {
-  const r = book.value.reviews[idx];
-  newReview.value = r.comment;
-  deleteReview(idx, false);
-  menuOpen.value = null;
-};
-
-// Delete review
-const deleteReview = async (idx, confirmDelete = true) => {
-  const r = book.value.reviews[idx];
-  if (confirmDelete && !confirm('Delete this review?')) return;
-  try {
-    await updateDoc(doc(db, 'books', id), { reviews: arrayRemove(r) });
-    book.value.reviews.splice(idx, 1);
-    toast.success('Review deleted!');
-  } catch (err) {
-    console.error(err);
-    toast.error('Failed to delete review');
+const handleSearch = () => {
+  const text = searchQuery.value.toLowerCase().trim()
+  if (!text) {
+    filteredBooks.value = books.value
+    return
   }
-  menuOpen.value = null;
-};
+  filteredBooks.value = books.value.filter(
+    (b) =>
+      b.title?.toLowerCase().includes(text) ||
+      b.author?.toLowerCase().includes(text) ||
+      b.category?.toLowerCase().includes(text)
+  )
+}
 
-// Auth overlay
-const toggleAuthForm = () => {
-  showSignUp.value = !showSignUp.value;
-  showSignIn.value = !showSignIn.value;
-};
-const onAuthSuccess = (u) => (user.value = u);
+const openBook = (id) => {
+  router.push(`/books/${id}`)
+}
+
+onMounted(fetchBooks)
 </script>
+
+<style scoped>
+.hover\:shadow-3xl:hover {
+  box-shadow: 0 25px 50px -12px rgba(234, 88, 12, 0.25);
+}
+</style>

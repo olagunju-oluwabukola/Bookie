@@ -25,7 +25,7 @@
               v-for="item in navItems"
               :key="item.name"
               :to="item.to"
-              class="text-gray-800 hover:text-yellow-500 font-medium"
+              class="text-black hover:text-orange-500 font-medium"
             >
               {{ item.name }}
             </NuxtLink>

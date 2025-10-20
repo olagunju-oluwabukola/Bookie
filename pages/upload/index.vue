@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-xl mx-auto mt-10 relative">
+  <div class="max-w-xl mx-auto">
     <div v-if="!user" class="absolute inset-0 bg-white/70 backdrop-blur-sm z-20 flex items-center justify-center">
       <div class="w-full max-w-md p-6">
         <component

@@ -2,8 +2,8 @@
   <div class="max-w-6xl mx-auto py-16 px-4 flex flex-col lg:flex-row gap-8 relative">
     <div v-if="!currentUser" class="absolute inset-0 z-50 bg-white/70 backdrop-blur-md flex items-center justify-center">
       <div class="bg-white rounded-xl p-8 shadow-lg text-center max-w-sm">
-        <h2 class="text-xl font-bold mb-4">Login or Sign Up to Access</h2>
-        <p class="mb-6">You must be logged in to view this book and post reviews.</p>
+        <h2 class="text-xl font-bold mb-4">please, Login or sign up to access this book😒</h2>
+
         <div class="flex gap-4 justify-center">
           <router-link to="/sign-in" class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition">Login</router-link>
           <router-link to="/sign-up" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">Sign Up</router-link>
@@ -140,7 +140,6 @@ const loadReviews = async () => {
 
 const sortedReviews = computed(() => [...reviews.value].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)))
 
-// Add or update review
 const startEdit = (rev) => {
   editId.value = rev.id
   newReview.value = rev.comment

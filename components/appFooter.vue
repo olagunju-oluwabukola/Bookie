@@ -8,9 +8,10 @@
             Bookie
           </span>
         </div>
-        <p class="text-gray-100 text-sm">
-          Building modern web experiences with passion. Stay connected with us for the latest updates and insights.
-        </p>
+      <p class="text-gray-100 text-sm">
+  Discover, share, and explore amazing books from readers around the world. Join Bookie to connect through stories and ideas.
+</p>
+
       </div>
       <div>
         <h3 class="font-semibold text-lg mb-4">Quick Links</h3>

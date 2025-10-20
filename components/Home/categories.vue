@@ -1,8 +1,8 @@
 <template>
   <section class="py-16 px-4 bg-gradient-to-b from-white via-white to-orange-50">
     <div class="max-w-7xl mx-auto text-center">
-      <h2 class="text-4xl font-bold bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-700 bg-clip-text text-transparent mb-4">Browse by Category</h2>
-      <p class="text-gray-600 mb-12 max-w-2xl mx-auto">
+      <h2 class="text-2xl md:text-4xl font-bold bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-700 bg-clip-text text-transparent mb-4">Browse by Category</h2>
+      <p class="text-gray-600 mb-12 max-w-2xl mx-auto text-sm md:text-lg">
         Explore our wide collection of books across different genres and fields. Start discovering your next favorite read.
       </p>
 

@@ -1,7 +1,7 @@
 <template>
   <div class="py-16 px-4">
     <div class="max-w-7xl mx-auto">
-      <h2 class="text-4xl font-bold text-center bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-700 bg-clip-text text-transparent mb-12">Features</h2>
+      <h2 class="text-2xl md:text-4xl font-bold text-center bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-700 bg-clip-text text-transparent mb-12">Features</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
         <div
           v-for="(feature, index) in features"

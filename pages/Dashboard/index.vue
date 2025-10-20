@@ -1,6 +1,6 @@
 <template>
   <section class="max-w-6xl mx-auto py-16 px-4">
-    <h2 class="text-3xl font-bold text-orange-700 mb-8">Your Bookmarked Books</h2>
+    <h2 class=" text-2xl md:text-3xl text-center font-bold bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-700 bg-clip-text text-transparent mb-12">Your Bookmarked Books</h2>
 
     <div v-if="bookmarks.length" class="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
       <div

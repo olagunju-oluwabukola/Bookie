@@ -16,7 +16,7 @@
         />
         <button
           @click="currentPage = 1"
-          class="h-full px-6 py-5 bg-gradient-to-r from-orange-600 to-orange-700 text-white font-semibold transition-all duration-300 hover:scale-105 shadow-md"
+          class="h-full px-3 md:px-6 py-4 md:py-5 bg-gradient-to-r from-orange-600 to-orange-700 text-white font-semibold transition-all duration-300 hover:scale-105 shadow-md"
         >
           Search
         </button>
@@ -49,16 +49,19 @@
         <div
           v-for="book in paginatedBooks"
           :key="book.id"
-          class="relative group bg-white border border-orange-100 rounded-xl shadow-md overflow-hidden
+          class="relative group  rounded-xl shadow-md overflow-hidden
                  transition-transform transition-shadow duration-300
                  hover:shadow-2xl hover:-translate-y-1"
         >
-          <img :src="book.coverUrl" class="w-full h-[320px] object-cover" />
+         <div class=" mt-2 ml-4">
+  <img :src="book.coverUrl" class="w-30 md:w-40 h-20 md:h-20 object-cover rounded" alt="Book Cover" />
+</div>
+
 
           <div class="p-4 relative h-[200px] flex flex-col justify-between">
             <div>
               <div class="flex justify-between items-start mb-2">
-                <h3 class="text-lg font-bold text-gray-900 line-clamp-2">{{ book.title }}</h3>
+                <h3 class="text-sm md:text-lg font-bold text-gray-900 line-clamp-2">{{ book.title }}</h3>
                 <button @click.stop="toggleBookmark(book)">
                   <Heart
                     v-if="isBookmarked(book.id)"
@@ -70,7 +73,7 @@
                   />
                 </button>
               </div>
-              <p class="text-sm text-gray-600 mb-2">by {{ book.author }}</p>
+              <p class=" text-xs md:text-sm text-gray-600 mb-2">by {{ book.author }}</p>
               <span
                 class="inline-block px-3 py-1 text-xs font-medium bg-orange-100 text-orange-700 rounded-full"
               >

@@ -82,9 +82,7 @@
 
       <div v-if="deleteId" class="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
         <div class="bg-white p-6 rounded-xl shadow-lg text-center max-w-sm flex flex-col items-center gap-4">
-          <svg class="w-10 h-10 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M8.257 3.099c.366-.446.957-.57 1.404-.204.446.366.57.957.204 1.404L9.828 5H14a1 1 0 110 2H6a1 1 0 110-2h3.172l-.647-.647zM4 7a1 1 0 011-1h10a1 1 0 011 1v10a2 2 0 01-2 2H6a2 2 0 01-2-2V7z" clip-rule="evenodd"/>
-          </svg>
+         <Trash2 class="text-red-600"/>
           <p>Are you sure you want to delete this review?</p>
           <div class="flex gap-4">
             <button @click="deleteReviewConfirmed(deleteId)" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">Yes</button>
@@ -104,7 +102,7 @@ import { useRoute } from 'vue-router'
 import { db } from '@/composables/firebase'
 import { doc, getDoc, setDoc, collection, getDocs, deleteDoc } from 'firebase/firestore'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-
+import {  Trash2 } from 'lucide-vue-next'
 const route = useRoute()
 const bookId = route.params.id
 const book = ref({})

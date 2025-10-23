@@ -12,7 +12,7 @@
 
     <!-- Upload form -->
     <div :class="{'blur-sm pointer-events-none': !user}" class="bg-white shadow-md rounded-xl p-6">
-      <div>Go back</div>
+
       <h2 class="text-2xl font-bold text-orange-700 mb-4">📚 Upload New Book</h2>
 
       <form @submit.prevent="uploadBook" class="space-y-4">

@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-6xl mx-auto py-16 px-4 flex flex-col lg:flex-row gap-8 relative">
+  <div class="max-w-6xl mx-auto py-16 px-4 flex flex-col lg:flex-row gap-8 ">
     <div v-if="!currentUser" class="absolute inset-0 z-50 bg-white/70 backdrop-blur-md flex items-center justify-center">
       <div class="bg-white rounded-xl p-8 shadow-lg text-center max-w-sm">
         <h2 class="text-xl font-bold mb-4">please, Login or sign up to access this book😒</h2>

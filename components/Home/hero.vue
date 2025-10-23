@@ -12,13 +12,15 @@
         Discover a literary odyssey with our groundbreaking library app, seamlessly
         transcending traditional boundaries for effortless book exploration. ✨
       </p>
-
-      <button
+<NuxtLink to="/sign-up">
+  <button
         class="bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 hover:from-orange-600 hover:via-orange-700 hover:to-orange-800 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all transform hover:scale-105 shadow-lg flex items-center gap-2 mx-auto"
       >
         Start Today
         <ArrowRight class="w-5 h-5" />
       </button>
+</NuxtLink>
+
 
       <div class="mt-12 flex items-center justify-center gap-4">
         <div class="flex -space-x-3">

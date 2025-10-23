@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen ">
     <div class="max-w-7xl mx-auto px-4 py-8">
-      <h1 class=" text-xl md:text-4xl font-bold  bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-700 bg-clip-text text-transparent mb-12">My Profile</h1>
+      <h1 class=" text-xl md:text-4xl font-bold  bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-700 bg-clip-text text-transparent mb-12 capitalize">Welcome, {{ profile.username }}✨</h1>
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-10">
 
         <div

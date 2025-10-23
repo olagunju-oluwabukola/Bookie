@@ -9,8 +9,8 @@
         ]"
       >
         <div class="flex items-center justify-between px-6 md:px-10 h-16">
-
-          <div class="flex-shrink-0 flex items-center gap-2">
+          <NuxtLink to="/">
+              <div class="flex-shrink-0 flex items-center gap-2">
             <img src="/assets/images/logo.png" alt="Logo" class="h-10 md:h-16 w-auto" />
             <span
               class="text-2xl font-extrabold bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-700 bg-clip-text text-transparent italic"
@@ -18,6 +18,8 @@
               Bookie
             </span>
           </div>
+          </NuxtLink>
+
 
 
           <nav class="hidden md:flex space-x-8">

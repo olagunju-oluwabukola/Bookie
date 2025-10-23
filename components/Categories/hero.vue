@@ -61,7 +61,7 @@
           <div class="p-4 relative h-[200px] flex flex-col justify-between">
             <div>
               <div class="flex justify-between items-start mb-2">
-                <h3 class="text-sm md:text-lg font-bold text-gray-900 line-clamp-2">{{ book.title }}</h3>
+                <h3 class="text-xs md:text-sm font-bold text-gray-900 line-clamp-2">{{ book.title }}</h3>
                 <button @click.stop="toggleBookmark(book)">
                   <Heart
                     v-if="isBookmarked(book.id)"
@@ -75,7 +75,7 @@
               </div>
               <p class=" text-xs md:text-sm text-gray-600 mb-2">by {{ book.author }}</p>
               <span
-                class="inline-block px-3 py-1 text-xs font-medium bg-orange-100 text-orange-700 rounded-full"
+                class="inline-block px-3 py-1 text-[10px] font-medium bg-orange-100 text-orange-700 rounded-full"
               >
                 {{ book.category }}
               </span>
@@ -102,7 +102,7 @@
             >
               <button
                 @click.stop="openBook(book.id)"
-                class="w-full py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition"
+                class="w-full py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition text-sm"
               >
                 Download
               </button>

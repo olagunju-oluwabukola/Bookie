@@ -14,9 +14,14 @@
     <div :class="{'blur-sm pointer-events-none': !currentUser}" class="w-full lg:w-1/3">
       <img :src="book.coverUrl" alt="Book Cover" class="w-full rounded-xl shadow-md" />
        <div class="mt-6">
-        <a :href="book.fileUrl" target="_blank" class="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition ">
-          Download Book
-        </a>
+        <button
+  @click="downloadBook"
+  class="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition flex items-center justify-center gap-2"
+>
+  <Loader2 v-if="downloading" class="w-5 h-5 animate-spin" />
+  <span>{{ downloading ? 'Downloading...' : 'Download Book' }}</span>
+</button>
+
       </div>
     </div>
     <div :class="{'blur-sm pointer-events-none': !currentUser}" class="flex-1 flex flex-col gap-6">
@@ -103,6 +108,46 @@ import { db } from '@/composables/firebase'
 import { doc, getDoc, setDoc, collection, getDocs, deleteDoc } from 'firebase/firestore'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import {  Trash2 } from 'lucide-vue-next'
+import { useToast } from 'vue-toastification'
+import { Loader2 } from 'lucide-vue-next'
+
+const toast = useToast()
+const downloading = ref(false)
+
+const downloadBook = async () => {
+  if (!currentUser.value) {
+    toast.warning('Please log in to download the book.')
+    return
+  }
+  if (!book.value.fileUrl) {
+    toast.error('No download link found.')
+    return
+  }
+
+  try {
+    downloading.value = true
+    const response = await fetch(book.value.fileUrl)
+    if (!response.ok) throw new Error('Failed to fetch file.')
+
+    const blob = await response.blob()
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${book.value.title || 'book'}.pdf`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    window.URL.revokeObjectURL(url)
+
+    toast.success('Book downloaded successfully!')
+  } catch (err) {
+    console.error(err)
+    toast.error('Failed to download book.')
+  } finally {
+    downloading.value = false
+  }
+}
+
 const route = useRoute()
 const bookId = route.params.id
 const book = ref({})
@@ -190,5 +235,11 @@ onMounted(async () => {
   await fetchBook()
   await loadRatings()
   await loadReviews()
+})
+
+
+useSeoMeta({
+  title: "Download - Bookie",
+  description: "Flip through the pages with so much confidence to draw lessons"
 })
 </script>

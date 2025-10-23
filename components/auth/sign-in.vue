@@ -10,6 +10,7 @@
       </h2>
       <p class="text-gray-600 text-sm mt-2 md:mt-3">Sign in to continue to your account</p>
     </div>
+
     <form @submit.prevent="signIn" class="space-y-4">
       <input
         v-model="email"
@@ -25,11 +26,14 @@
         required
         class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
       />
+
       <button
         type="submit"
-        class="w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:opacity-90 text-white py-2.5 rounded-lg font-medium transition-all duration-200"
+        :disabled="loading"
+        class="w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:opacity-90 text-white py-2.5 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2"
       >
-        Sign In
+        <Loader2 v-if="loading" class="w-5 h-5 animate-spin" />
+        <span>{{ loading ? 'Signing In...' : 'Sign In' }}</span>
       </button>
     </form>
 
@@ -48,15 +52,17 @@ import { auth } from '@/composables/firebase'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { useToast } from 'vue-toastification'
 import { useRoute, useRouter } from 'vue-router'
-import { User } from 'lucide-vue-next'
+import { User, Loader2 } from 'lucide-vue-next'
 
 const toast = useToast()
 const email = ref('')
 const password = ref('')
+const loading = ref(false)
 const route = useRoute()
 const router = useRouter()
 
 const signIn = async () => {
+  loading.value = true
   try {
     await signInWithEmailAndPassword(auth, email.value, password.value)
     toast.success('Signed in successfully!')
@@ -64,6 +70,8 @@ const signIn = async () => {
     router.push(redirectPath)
   } catch (err) {
     toast.error(err.message)
+  } finally {
+    loading.value = false
   }
 }
 </script>

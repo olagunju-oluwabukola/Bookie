@@ -101,6 +101,10 @@
 </template>
 
 <script setup>
+useSeoMeta({
+title: "Upload a book - Bookie",
+description: "Contribute to our collection of books"
+})
 import { ref, onMounted } from 'vue'
 import { auth } from '@/composables/firebase'
 import { onAuthStateChanged } from 'firebase/auth'

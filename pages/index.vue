@@ -13,4 +13,9 @@ definePageMeta({
     layout: 'default',
     title: 'Home Page',
 })
+,
+useSeoMeta({
+  title: 'Home - Bookie',
+  description: 'A literary odyssey with our groundbreaking library app.',
+})
 </script>

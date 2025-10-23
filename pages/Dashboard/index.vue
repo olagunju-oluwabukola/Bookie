@@ -2,8 +2,6 @@
   <div class="min-h-screen ">
     <div class="max-w-7xl mx-auto px-4 py-8">
       <h1 class=" text-xl md:text-4xl font-bold  bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-700 bg-clip-text text-transparent mb-12">My Profile</h1>
-
-
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-10">
 
         <div
@@ -162,7 +160,7 @@ import {
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import axios from 'axios'
 import { useToast } from 'vue-toastification'
-import { UploadIcon, Bookmark, MessageCircle, Loader, Camera, Upload } from 'lucide-vue-next'
+import { UploadIcon, Bookmark, MessageCircle, Loader, Camera, Upload, User } from 'lucide-vue-next'
 
 const toast = useToast()
 const db = getFirestore()
@@ -317,7 +315,7 @@ const statCards = computed(() => [
     title: 'Uploaded Books',
     icon: UploadIcon,
     count: stats.value.uploaded.total,
-    subtext: `Approved: ${stats.value.uploaded.approved} • Pending: ${stats.value.uploaded.pending}`
+    subtext: `Approved: ${stats.value.uploaded.pending} • Pending: ${stats.value.uploaded.approved}`
   },
   {
     title: 'Reviews',
@@ -332,6 +330,11 @@ const statCards = computed(() => [
     subtext: 'Saved books'
   }
 ])
+
+
+useSeoMeta({
+  title: "My Profile - Bookie"
+})
 </script>
 
 <style scoped>
